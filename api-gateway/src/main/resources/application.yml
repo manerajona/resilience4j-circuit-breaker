@@ -1,0 +1,33 @@
+server.port: 9090
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      remittance-service:
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        minimumNumberOfCalls: 5
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        eventConsumerBufferSize: 10
+        registerHealthIndicator: true
+  retry:
+    instances:
+      remittance-service:
+        maxAttempts: 3
+        waitDuration: 1s
+  timelimiter:
+    instances:
+      remittance-service:
+        timeoutDuration: 5s
+        cancelRunningFuture: true
+
+# actuator
+management:
+  endpoint.health.show-details: always
+  health.circuitbreakers.enabled: true
+
+logging:
+  level:
+    reactor.netty.http.client: debug
